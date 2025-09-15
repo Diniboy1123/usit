@@ -1,0 +1,21 @@
+services:
+  usit:
+    network_mode: host
+    build: .
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    restart: unless-stopped
+    environment:
+      - REMOTE4=216.66.80.26
+      - LOCAL6=2001:db8:abcd:1234::2/64
+      - MTU=1420
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    network_mode: "service:usit"
+    depends_on:
+      - usit
